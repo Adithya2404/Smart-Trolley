@@ -5,7 +5,8 @@ c = conn.cursor()
 class db_mgt:
 
     def __init__(self):
-        
+        self.conn
+        self.c
 
     def initiate(BARCODE_DB):
 
@@ -16,14 +17,12 @@ class db_mgt:
             print('Table exists')
         else:
             create_table = (''' CREATE TABLE BARCODE_DB 
-               ([Barcode] INTEGER PRIMARY KEY, [Product] text, [Price] integer)''')
+               ([Barcode] INTEGER PRIMARY KEY, [Product] text, [Price] integer, [Weight] integer)''')
             c.execute(create_table)
 
 # barcode = input('Barcode :')
 # pdt_name = input('Product Name: ')
 # amt = input('Price : ')
-
-##insert function for inserting values
 
     def barcode_check(barcode):
         typeVar = str(barcode)
@@ -32,12 +31,14 @@ class db_mgt:
         codes = c.fetchall()
         print(codes)
 
-    def update_db(barcode,pdt_name,amt):
-        insert_data = (""" INSERT INTO BARCODE_DB (Barcode, Product, Price) VALUES (?, ?, ?)""", (barcode, pdt_name, amt))
+    def insert_db(barcode,pdt_name,amt,wt):
+        insert_data = (""" INSERT INTO BARCODE_DB (Barcode, Product, Price, Weight) VALUES (?, ?, ?, ?)""", (barcode, pdt_name, amt,wt))
         c.execute(insert_data)
 
-initiate()
-barcode_check()
+
+
+obj = db_mgt()
+obj.insert(barcode,pdt_name,amt,wt)
 conn.commit()
 print ('Data entered successfully')
 conn.close()

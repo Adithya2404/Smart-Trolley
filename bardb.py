@@ -1,45 +1,44 @@
 import sqlite3
-conn = sqlite3.connect('testdb.db')
-c = conn.cursor()
 
-class db_mgt:
+class dbMgt:
+    def __init__(self,BARCODE_DB):
+        try:
+            self.conn = sqlite3.connect('testdb.db')
+            self.c = self.conn.cursor()
+            check_table = (""" SELECT count(name) FROM sqlite_master WHERE type='table' AND name='BARCODE_DB' """)
+            self.c.execute(check_table)   
+            if self.c.fetchone()[0]==1 :
+                print('Table exists')
+            else:
+                create_table = (''' CREATE TABLE BARCODE_DB 
+                ([Barcode] INTEGER PRIMARY KEY, [Product] text, [Price] integer, [Weight] integer)''')
+                self.c.execute(create_table)
+        except:
+            print("Error while initialising DB")
 
-    def __init__(self):
-        self.conn = sqlite3.connect('testdb.db')
-        self.c = conn.cursor()
+    def barcode_check(self, barcode):
+        try:
+            typeVar = str(barcode)
+            check_barcode = ("SELECT * from BARCODE_DB WHERE Barcode={}".format(typeVar))
+            self.c.execute(check_barcode)
+            codes = self.c.fetchall()
+            print(codes)
+            return True
+        except:
+            return False
 
-    def initiate(self,BARCODE_DB):
-
-        check_table = (""" SELECT count(name) FROM sqlite_master WHERE type='table' AND name='BARCODE_DB' """)
-        self.c.execute(check_table)
+    def insert_db(self, barcode,pdt_name,amt,wt):
+        try:
+            insert_data = (""" INSERT INTO BARCODE_DB (Barcode, Product, Price, Weight) VALUES (?, ?, ?, ?)""", (barcode, pdt_name, amt,wt))
+            self.c.execute(insert_data)
+            return True
+        except:
+            return False
     
-        if self.c.fetchone()[0]==1 :
-            print('Table exists')
-        else:
-            create_table = (''' CREATE TABLE BARCODE_DB 
-               ([Barcode] INTEGER PRIMARY KEY, [Product] text, [Price] integer, [Weight] integer)''')
-            self.c.execute(create_table)
-
-# barcode = input('Barcode :')
-# pdt_name = input('Product Name: ')
-# amt = input('Price : ')
-
-    def barcode_check(barcode):
-        typeVar = str(barcode)
-        check_barcode = ("SELECT * from BARCODE_DB WHERE Barcode={}".format(typeVar))
-        self.c.execute(check_barcode)
-        codes = self.c.fetchall()
-        print(codes)
-
-    def insert_db(barcode,pdt_name,amt,wt):
-        insert_data = (""" INSERT INTO BARCODE_DB (Barcode, Product, Price, Weight) VALUES (?, ?, ?, ?)""", (barcode, pdt_name, amt,wt))
-        self.c.execute(insert_data)
-
-
-
-obj = db_mgt()
-obj.insert_db(barcode,pdt_name,amt,wt)
-conn.commit()
-print ('Data entered successfully')
-conn.close()
-
+    def completeDb(self):
+        try:
+            self.conn.commit()
+            self.conn.close()
+            return True
+        except:
+            return False

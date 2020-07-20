@@ -1,8 +1,8 @@
-from bardb import dg_mgt
+from bardb import dbMgt
 barcode = input()
 pdt_name = input()
 amt = input()
 wt = input()
-obj = db_mgt()
+obj = dbMgt()
 obj.insert_db(barcode,pdt_name,amt,wt)
 obj.completeDb()

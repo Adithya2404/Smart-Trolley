@@ -1,7 +1,7 @@
 import sqlite3
 
 class dbMgt:
-    def __init__(self,BARCODE_DB):
+    def __init__(self):
         try:
             self.conn = sqlite3.connect('testdb.db')
             self.c = self.conn.cursor()
@@ -42,3 +42,7 @@ class dbMgt:
             return True
         except:
             return False
+
+obj = dbMgt()
+obj.insert_db(1231,"britto",100,40)
+obj.completeDb()
